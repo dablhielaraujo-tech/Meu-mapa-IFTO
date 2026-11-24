@@ -1,0 +1,25 @@
+{
+  "name": "Mapa Fácil com GPS — IFTO Campus Palmas",
+  "short_name": "Mapa IFTO",
+  "description": "Mapa interativo e navegação GPS interna do IFTO Campus Palmas",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07381f",
+  "theme_color": "#07381f",
+  "lang": "pt-BR",
+  "categories": [
+    "education",
+    "navigation",
+    "maps"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

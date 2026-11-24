@@ -1,0 +1,22 @@
+{
+  "name": "mapa-interativo-ifto-palmas",
+  "version": "1.0.0",
+  "description": "Mapa Fácil com GPS — IFTO Campus Palmas (Web, PWA e App Mobile)",
+  "scripts": {
+    "start": "npx serve .",
+    "android:init": "npm install @capacitor/core @capacitor/cli @capacitor/android && npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "keywords": [
+    "ifto",
+    "palmas",
+    "mapa",
+    "gps",
+    "leaflet",
+    "geojson",
+    "pwa",
+    "capacitor"
+  ],
+  "license": "MIT"
+}

@@ -1,1 +1,82 @@
-🗺️ Mapa Fácil com GPS — IFTO Campus PalmasAplicação web interativa de geolocalização e roteamento interno desenvolvida para facilitar a navegação de estudantes, servidores e visitantes pelo Instituto Federal do Tocantins (IFTO) — Campus Palmas.O sistema permite pesquisar blocos, salas, laboratórios e setores administrativos, visualizá-los sobre imagens de satélite de alta definição e traçar rotas a pé em tempo real utilizando a malha real de passarelas e corredores do campus.✨ Principais Funcionalidades🔍 Busca Inteligente e Instantânea: Pesquisa sem diferenciação de acentos ou maiúsculas/minúsculas por nome do local, código, bloco ou descrição (ex.: Biblioteca, Bloco 5, Auditório Central, Coordenação, Banheiro).🏷️ Filtros Rápidos por Categoria: Atalhos de um clique para filtrar entre Todos (522), Blocos (38), Coordenações, Laboratórios, Salas, Banheiros e Caminhos.🧭 Roteamento GPS Interno (Algoritmo de Dijkstra): Calcula automaticamente o menor trajeto a pé utilizando os 39 trechos reais de passarelas e corredores mapeados no campus, exibindo distância em metros/quilômetros e tempo estimado de caminhada.📍 Geolocalização em Tempo Real: Integração com a API de Geolocalização do navegador (navigator.geolocation.watchPosition) para traçar rotas a partir da posição atual do usuário ou simular a partida a partir da Entrada Principal.🎛️ Controle de Camadas Sob Demanda: Para manter a visualização limpa, as camadas gerais iniciam ocultas e são exibidas conforme a pesquisa do usuário, mas podem ser ativadas/desativadas manualmente (Blocos, Pontos e Caminhos).🛰️ Múltiplos Modos de Mapa Base: Alternância entre Satélite Híbrido (Google), Satélite Puro, Satélite Alternativo (Esri/Maxar) e Mapa Vetorial Limpo (CARTO Voyager), com suporte a zoom ultra nítido (até nível 22x).📱 Responsivo para Dispositivos Móveis: Layout adaptado para smartphones e tablets sem necessidade de instalação de aplicativo.📊 Base de Dados MapeadaA base geoespacial (GeoJSON) embutida na aplicação contempla 522 feições georreferenciadas do Campus Palmas:CamadaQuantidadeDescriçãoEdificações (Blocos)38Polígonos dos blocos de aula, ginásio, biblioteca, refeitório, garagem, quadras e áreas de apoio, com cálculo de área ($m^2$).Pontos de Interesse445Salas de aula, laboratórios, coordenações, setores administrativos, banheiros, bebedouros, cantinas e pontos de acesso.Caminhos e Passarelas39Linhas da rede viária interna de pedestres, identificando tipo de piso, cobertura e comprimento em metros.🛠️ Tecnologias UtilizadasHTML5 & CSS3: Interface responsiva com variáveis CSS, Flexbox, Grid e animações leves (@keyframes).JavaScript (ES6+): Motor de busca normalizado, manipulação de GeoJSON e implementação própria de projeção planar local e Algoritmo de Dijkstra para cálculo de menor caminho em grafos.Leaflet.js (v1.9.4): Biblioteca open-source para renderização de mapas interativos, marcadores, polígonos e controles de camada.🚀 Como Executar o ProjetoPor ser uma aplicação Single-File (arquivo único auto-contido, sem dependências de build ou backend), a execução é imediata:Baixe ou clone o arquivo mapa_interativo_ifto_palmas.html.Abra o arquivo diretamente em qualquer navegador moderno (Google Chrome, Firefox, Edge, Safari).(Opcional) Para utilizar o recurso "Ativar Meu GPS" em dispositivos móveis ou desktops, recomenda-se hospedar o arquivo em um servidor com HTTPS (como GitHub Pages, Vercel ou Netlify), pois navegadores exigem conexão segura para liberar o acesso à geolocalização.📂 Estrutura do CódigoTodo o código está organizado em seções bem definidas dentro do arquivo HTML:Estilos (<style>): Tema visual institucional (verde IFTO), painel lateral, cartões de resultado, banner flutuante de navegação GPS e regras responsivas (@media).Base de Dados (DADOS_IFTO_TRAVADOS): Objeto GeoJSON imutável contendo edificacoes, caminhos e pontos.Camadas Base (L.tileLayer): Configuração dos provedores de satélite e mapa vetorial.Motor de Roteamento (construirGrafoCaminhos / calcularRotaGPS): Converte coordenadas geográficas (Latitude/Longitude) para plano cartesiano local em metros, conecta segmentos interceptados e executa o caminho mínimo.Gerenciamento de Interface e GPS: Controle de seleção, zoom automático, alternância de origem (Entrada vs. GPS do usuário) e renderização dinâmica da lista.📄 LicençaProjeto desenvolvido para fins educacionais e de acessibilidade/orientação no IFTO — Campus Palmas (Tocantins, Brasil).
+# Mapa Fácil com GPS — IFTO Campus Palmas
+
+Aplicação web responsiva e instalável (**PWA / App Mobile**) para localização interna e navegação GPS pedestre no **Instituto Federal do Tocantins (IFTO) — Campus Palmas**.
+
+Permite pesquisar blocos, salas de aula, laboratórios, coordenações e áreas comuns, exibindo o destino no mapa de satélite de alta resolução e traçando a rota a pé pelas passarelas e corredores reais do campus.
+
+---
+
+## Estrutura do Projeto
+
+```text
+mapa-ifto-palmas-app/
+├── index.html                          # Estrutura principal da interface
+├── manifest.json                       # Configuração PWA (ícone, nome, modo standalone)
+├── sw.js                               # Service Worker para cache e funcionamento offline
+├── capacitor.config.json               # Configuração pronta para gerar APK/AAB (Android) ou iOS
+├── package.json                        # Scripts auxiliares para servidor local e Capacitor
+├── .gitignore                          # Arquivos ignorados pelo Git
+├── README.md                           # Documentação do projeto
+├── css/
+│   └── style.css                       # Estilos visuais e layout responsivo para celular
+├── js/
+│   └── app.js                          # Mapa Leaflet, algoritmo de rotas (Dijkstra) e GPS
+├── data/
+│   ├── campus-data.js                  # Base geoespacial carregada diretamente pela aplicação
+│   └── campus-ifto-palmas.geojson.json # Exportação GeoJSON padrão para uso em SIG/QGIS
+└── icons/
+    └── icon.svg                        # Ícone vetorial do aplicativo
+```
+
+---
+
+## Funcionalidades Principais
+
+* **Base Geoespacial Completa (522 elementos):**
+  * **38 Edificações:** Polígonos georreferenciados dos blocos administrativos, acadêmicos, biblioteca, refeitório e áreas esportivas.
+  * **445 Pontos de Interesse:** Salas, laboratórios, coordenações, setores administrativos, banheiros, bebedouros e áreas de convivência.
+  * **39 Caminhos e Passarelas:** Malha pedestre com metadados de cobertura e tipo de piso.
+* **Motor de Roteamento Pedestre (Dijkstra):** Constrói um grafo topológico a partir das passarelas do campus, projeta origem e destino no segmento mais próximo e calcula distância (em metros) e tempo estimado de caminhada.
+* **GPS em Tempo Real:** Integração com a API de Geolocalização do dispositivo (`navigator.geolocation`), atualizando o trajeto dinamicamente conforme o usuário caminha pelo campus (com fallback automático para a **Entrada Principal**).
+* **Camadas Sob Demanda:** O mapa inicia limpo e exibe apenas o local pesquisado ou as camadas ativadas manualmente pelo usuário.
+
+---
+
+## Como Publicar no GitHub e Colocar no Ar (GitHub Pages)
+
+1. Crie um novo repositório no GitHub (ex: `mapa-ifto-palmas`).
+2. Extraia o conteúdo desta pasta e envie os arquivos para o repositório:
+   ```bash
+   git init
+   git add .
+   git commit -m "Versão inicial do Mapa Fácil com GPS - IFTO Campus Palmas"
+   git branch -M main
+   git remote add origin https://github.com/SEU-USUARIO/mapa-ifto-palmas.git
+   git push -u origin main
+   ```
+3. Para hospedar gratuitamente com HTTPS (obrigatório para o GPS funcionar no celular):
+   * No GitHub, acesse **Settings → Pages**.
+   * Em **Source**, selecione **Deploy from a branch**, escolha `main` e `/ (root)`, e clique em **Save**.
+   * Em poucos instantes seu link `https://seu-usuario.github.io/mapa-ifto-palmas/` estará ativo.
+
+---
+
+## Como Transformar em Aplicativo (Celular)
+
+### Opção 1: Instalação Direta como PWA (Sem Loja de Aplicativos)
+1. Abra o link do **GitHub Pages** no navegador do celular (Chrome no Android ou Safari no iOS).
+2. Toque no menu do navegador e selecione **"Adicionar à tela inicial"** ou **"Instalar aplicativo"**.
+3. O app será instalado com ícone próprio, tela cheia e cache offline.
+
+### Opção 2: Gerar App Nativo Android (APK / Play Store) com Capacitor
+Este projeto já inclui o `capacitor.config.json` configurado. Com o Node.js e o Android Studio instalados:
+```bash
+npm run android:init
+npm run android:sync
+npm run android:open
+```
+No Android Studio, lembre-se de manter a permissão de localização no `AndroidManifest.xml`:
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```

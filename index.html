@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mapa Fácil com GPS — IFTO Campus Palmas</title>
+  <meta name="description" content="Mapa interativo com navegação GPS pelas passarelas, blocos, salas e laboratórios do IFTO Campus Palmas." />
+  <meta name="theme-color" content="#07381f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mapa IFTO" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="apple-touch-icon" href="./icons/icon.svg" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <!-- PAINEL LATERAL -->
+  <aside id="sidebar">
+    <div class="header">
+      <h1>Mapa Fácil com GPS — IFTO Campus Palmas</h1>
+      <p>Pesquise um bloco ou sala para ver no mapa e traçar a rota</p>
+    </div>
+
+    <!-- CONTROLE DE ATIVAR / DESATIVAR CAMADAS NO MAPA -->
+    <div class="layers-panel">
+      <div class="layers-top-row">
+        <span class="layers-title">Exibir no Mapa (Oculto por padrão)</span>
+        <button id="btnToggleAllLayers" class="btn-toggle-all" aria-pressed="false">
+          Mostrar Tudo: OFF
+        </button>
+      </div>
+      <div class="layer-switches">
+        <button class="layer-toggle" data-layer="edificacoes" aria-pressed="false" title="Ativar/desativar todos os blocos no mapa">
+          <span class="dot"></span> Blocos (38)
+        </button>
+        <button class="layer-toggle" data-layer="pontos" aria-pressed="false" title="Ativar/desativar todos os pontos no mapa">
+          <span class="dot"></span> Pontos (445)
+        </button>
+        <button class="layer-toggle" data-layer="caminhos" aria-pressed="false" title="Ativar/desativar todos os caminhos no mapa">
+          <span class="dot"></span> Caminhos (39)
+        </button>
+      </div>
+    </div>
+
+    <div class="search-section">
+      <label class="search-label" for="searchInput">Pesquisar local ou bloco</label>
+      <div class="search-input-wrap">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Ex: Biblioteca, Bloco 5, Auditório Central, Sala..."
+          autocomplete="off"
+        />
+        <button id="clearSearchBtn" title="Limpar texto">×</button>
+      </div>
+
+      <div class="quick-chips" role="group" aria-label="Filtros rápidos">
+        <button class="chip-btn active" data-mode="ALL" data-query="">Todos (522)</button>
+        <button class="chip-btn" data-mode="EDIFICACAO" data-query="">Blocos (38)</button>
+        <button class="chip-btn" data-mode="PONTO" data-query="coordenacao">Coordenações</button>
+        <button class="chip-btn" data-mode="PONTO" data-query="laboratorio">Laboratórios</button>
+        <button class="chip-btn" data-mode="PONTO" data-query="sala">Salas</button>
+        <button class="chip-btn" data-mode="PONTO" data-query="banheiro sanitario">Banheiros</button>
+        <button class="chip-btn" data-mode="CAMINHO" data-query="">Caminhos</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <span id="statusCounter">522 locais disponíveis</span>
+      <div class="toolbar-actions">
+        <button class="btn-pill" id="btnGps" title="Ativar localização em tempo real para traçar rotas de onde você está">Ativar Meu GPS</button>
+        <button class="btn-pill" id="btnResetZoom" title="Limpar seleção e enquadrar o campus inteiro">Limpar</button>
+      </div>
+    </div>
+
+    <div id="resultsList" role="list"></div>
+  </aside>
+
+  <!-- ÁREA DO MAPA -->
+  <main id="mapContainer">
+    <div id="map"></div>
+    <div id="mapHintBadge">
+      Mapa limpo: pesquise um local ao lado para exibir o ponto e a rota GPS, ou ative as camadas no painel.
+    </div>
+
+    <!-- CARTÃO FIXO DO LOCAL SELECIONADO + ROTA GPS -->
+    <div id="selectedBanner" role="region" aria-live="polite">
+      <div class="banner-header-row">
+        <div>
+          <div class="banner-tag" id="bannerTag">Destino Selecionado</div>
+          <div class="banner-title" id="bannerTitle">—</div>
+          <div class="banner-info" id="bannerInfo">—</div>
+        </div>
+        <button class="btn-close-banner" id="btnCloseBanner" title="Fechar local e rota">×</button>
+      </div>
+
+      <div class="gps-box" id="gpsBox">
+        <div class="gps-box-top">
+          <span class="gps-origin-text" id="gpsOriginText">Rota GPS: Saindo da Entrada</span>
+          <span class="gps-metrics" id="gpsMetrics">—</span>
+        </div>
+        <div class="gps-note" id="gpsNote">
+          Seguindo pelas passarelas e corredores do campus.
+        </div>
+      </div>
+
+      <div class="banner-buttons">
+        <button class="banner-btn btn-gps-origin" id="btnToggleOrigin">Usar Minha Localização (GPS)</button>
+        <button class="banner-btn btn-fit-route" id="btnFitRoute">Ver Rota Inteira</button>
+        <button class="banner-btn btn-zoom-max" id="btnZoomSuperPerto">+ Aproximar</button>
+        <button class="banner-btn btn-zoom-bloco" id="btnVerBloco">Ver Bloco</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="./data/campus-data.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "appId": "br.edu.ifto.palmas.mapa",
+  "appName": "Mapa IFTO Palmas",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  }
+}
